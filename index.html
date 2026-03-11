@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>En Flam - El Drac de la Vall</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #1a1a2e;
+            color: #eee;
+            line-height: 1.8;
+        }
+
+        /* Hero Section con Portada.png */
+        .hero {
+            height: 100vh;
+            background-image: url('imagenes/Portada.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #fff;
+            font-style: italic;
+        }
+
+        /* Audio Controls */
+        .audio-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(255, 215, 0, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-control:hover {
+            transform: scale(1.1);
+            background: #ffd700;
+        }
+
+        .audio-control.muted {
+            background: #666;
+        }
+
+        /* Navigation Tabs */
+        .tabs-container {
+            background: #16213e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1.5rem;
+            background: transparent;
+            border: none;
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: #ffd700;
+        }
+
+        .tab.active {
+            color: #ffd700;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #ffd700;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .story-text {
+            font-size: 1.2rem;
+            text-align: justify;
+            margin-bottom: 2rem;
+        }
+
+        .story-text p {
+            margin-bottom: 1.5rem;
+            text-indent: 2rem;
+        }
+
+        .dialogue {
+            font-style: italic;
+            color: #ffd700;
+            margin-left: 2rem;
+            border-left: 3px solid #ffd700;
+            padding-left: 1rem;
+        }
+
+        /* Images */
+        .story-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin: 2rem auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 3px solid #ffd700;
+        }
+
+        .image-caption {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Summary Section */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .summary-card {
+            background: #0f3460;
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid #e94560;
+        }
+
+        .summary-card h3 {
+            color: #e94560;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #e94560;
+            padding-bottom: 0.5rem;
+        }
+
+        .summary-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .lang-tag {
+            display: inline-block;
+            background: #e94560;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .tab { font-size: 0.9rem; padding: 1rem; }
+            .story-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Element -->
+    <audio id="bgAudio" loop>
+        <source src="audio.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Audio Control Button -->
+    <button class="audio-control" id="audioBtn" onclick="toggleAudio()">
+        🔊
+    </button>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>En Flam</h1>
+            <p>El petit drac verd de la muntanya</p>
+        </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('catalan')">Català</button>
+            <button class="tab" onclick="showTab('spanish')">Castellano</button>
+            <button class="tab" onclick="showTab('english')">English</button>
+            <button class="tab" onclick="showTab('summary')">Resum / Resumen / Summary</button>
+        </div>
+    </div>
+
+    <!-- Catalan Content -->
+    <div id="catalan" class="content-section active">
+        <div class="story-text">
+            <p>A la falda d'una muntanya alta i plena de pins vivia en Flam, un petit drac verd amb escates brillants i ulls grans i curiosos. La seva cova era càlida i segura, amb vistes al poble que s'estenia a la vall. Des d'allà, li agradava observar les teulades vermelles, el fum suau de les xemeneies i la gent caminant per la plaça. Sempre havia sentit curiositat pels humans, però mai no s'hi havia acostat gaire.</p>
+            
+            <img src="imagenes/Imagen1.png" alt="Flam a la seva cova" class="story-image">
+            <p class="image-caption">En Flam observant la vall des de la seva cova</p>
+
+            <p>En Flam tenia un secret que el feia sentir diferent dels altres dracs de les històries antigues. Li feia por el seu propi foc. Sabia que dins seu hi havia una flama poderosa, però no confiava en ella. Un dia, tot sol a la cova, va decidir intentar-ho. Va respirar fondo, va notar la calor pujant per la gola… i una espurna petita va escapar-se-li de la boca. Espantat, va saltar enrere i va córrer a apagar-la amb les potes, convençut que podia provocar un incendi.</p>
+            
+            <p class="dialogue">—No puc… —es repetia—. El meu foc és perillós.</p>
+            
+            <p>A partir d'aquell moment, cada vegada que notava aquella escalfor dins seu, s'amagava. Preferia sentir-se covard abans que arriscar-se a fer mal a algú.</p>
+
+            <img src="imagenes/Imagen2.png" alt="La Lina i en Flam" class="story-image">
+            <p class="image-caption">La Lina descobreix en Flam prop de la cova</p>
+
+            <p>Un matí de primavera, mentre el sol tenyia la muntanya de llum daurada, una nena va aparèixer prop de la cova. Era la Lina. Duia un cistell ple de flors i caminava sense pressa, observant papallones i cantant fluixet. Quan va veure en Flam, es van quedar mirant en silenci. Ell va tensar les ales, preparat per fugir.</p>
+            
+            <p>Però la Lina no va cridar.</p>
+            
+            <p class="dialogue">—Hola —va dir amb naturalitat—. Ets tu qui viu aquí?</p>
+            
+            <p>En Flam va assentir, sorprès.</p>
+            
+            <p class="dialogue">—Sí… però no m'hi acosto al poble.</p>
+            
+            <p class="dialogue">—Doncs jo sí que m'hi acostaré —va respondre ella amb un somriure—. Sembles simpàtic.</p>
+            
+            <p>Aquell dia van parlar molta estona. La Lina li va explicar com era la vida al poble: el forn que feia olor de pa calent, la plaça on jugaven els nens, les històries que li agradava llegir a la vora del foc. En Flam li va ensenyar un estany amagat i una roca alta des d'on es veia tota la vall. A poc a poc, l'amistat va créixer. La Lina pujava sovint a visitar-lo, i en Flam ja no se sentia tan sol.</p>
+            
+            <p>Tot i així, encara no li havia confessat la seva por.</p>
+
+            <img src="imagenes/Imagen3.png" alt="La tempesta i el foc" class="story-image">
+            <p class="image-caption">En Flam il·lumina el poble durant la tempesta</p>
+
+            <p>L'hivern va arribar amb vents freds i dies grisos. Una nit, una tempesta ferotge va esclatar sobre el poble. El vent bufava amb tanta força que apagava torxes i fogueres. La pluja queia sense parar, i les xemeneies es van quedar sense flama. El poble va quedar a les fosques.</p>
+            
+            <p>Dins les cases, la gent tremolava. Un nen plorava perquè tenia fred. El forner mirava el seu forn apagat sense saber com coure el pa. Una àvia embolicava els seus néts amb mantes gruixudes. Sense foc, no hi havia escalfor ni llum.</p>
+            
+            <p>La Lina, mirant la plaça fosca des de la finestra, va pensar immediatament en Flam. Es va posar una capa gruixuda i, tot i la pluja, va pujar cap a la muntanya.</p>
+            
+            <p>Quan va arribar a la cova, en Flam estava encongit, espantat pels trons.</p>
+            
+            <p class="dialogue">—Flam —va dir ella, amb la veu tremolosa però decidida—, el poble necessita ajuda. Els focs s'han apagat.</p>
+            
+            <p>El petit drac va sentir de seguida la calor dins seu, com si la flama volgués sortir. Però també va sentir la por de sempre.</p>
+            
+            <p class="dialogue">—I si faig mal a algú? —va preguntar amb els ulls baixos.</p>
+            
+            <p>Des d'un arbre antic prop de la cova, el Mussol Saví va desplegar les ales i va baixar planejant suaument. Era vell i serè, amb una mirada profunda que semblava haver vist moltes coses.</p>
+            
+            <p class="dialogue">—Flam —va dir amb veu pausada—, el foc no és enemic. El foc és llum, és cuina, és protecció. Depèn de qui el faci servir. Tu tens por perquè tens bon cor. I precisament per això el teu foc pot ser segur.</p>
+            
+            <p>En Flam va quedar en silenci. Va mirar la Lina, xopa per la pluja però amb els ulls plens de confiança. Va recordar el nen que plorava, el forn apagat, l'àvia amb les mantes. Va tancar els ulls un moment, respirant profundament. Aquesta vegada no volia fugir.</p>
+            
+            <p class="dialogue">—Ho intentaré —va dir finalment.</p>
+            
+            <p>Va obrir la boca amb cura. Una flama petita i daurada va sortir suaument, com la llum d'una espelma. No cremava amb fúria; escalfava amb dolçor. En veure que la cova no s'encenia ni hi havia cap peril, en Flam va sentir una força nova dins el pit.</p>
+            
+            <p>Va volar cap al poble amb la Lina corrent al seu costat. A la plaça, va inclinar el cap i va encendre la foguera central. Després, amb molta cura, va anar encenent altres focs. El forner va poder tornar a escalfar el forn. L'àvia va estendre les mans davant la flama amb un sospir d'alleujament. El nen va deixar de plorar i va somriure en veure la llum tornar.</p>
+            
+            <p>La gent mirava el petit drac amb sorpresa… i després amb gratitud.</p>
+            
+            <p class="dialogue">—Gràcies! —va cridar algú.</p>
+            
+            <p class="dialogue">—És el nostre drac! —va dir el nen.</p>
+            
+            <p>En Flam sentia el cor bategant fort, però ja no era por el que l'omplia. Era alegria. Va comprendre que el seu foc era especial perquè naixia del desig d'ajudar. No destruïa: protegia.</p>
+            
+            <p>Quan la tempesta es va esvair i els núvols van deixar pas a un cel clar, el poble tornava a estar ple de llum i vida. La Lina es va acostar i el va abraçar tan fort com va poder.</p>
+            
+            <p class="dialogue">—Ho veus? —li va dir—. El teu foc surt del teu bon cor.</p>
+            
+            <p>Des d'aquell dia, en Flam ja no es va amagar mai més. Continuava sent prudent, però no deixava que la por decidís per ell. Ajudava a encendre les fogueres a l'hivern, il·luminava la plaça durant les festes i escalfava el forn quan calia. El Mussol Saví l'observava des del seu arbre amb satisfacció, sabent que el petit drac havia après una gran lliçó.</p>
+            
+            <p>I així, entre la muntanya i la vall, en Flam es va convertir en el drac amic del poble. Tothom sabia que, quan la foscor arribava, sempre hi hauria una flama càlida nascuda d'un cor valent.</p>
+        </div>
+    </div>
+
+    <!-- Spanish Content -->
+    <div id="spanish" class="content-section">
+        <div class="story-text">
+            <p>A la falda de una montaña alta y llena de pinos vivía Flam, un pequeño dragón verde con escamas brillantes y ojos grandes y curiosos. Su cueva era cálida y segura, con vistas al pueblo que se extendía por el valle. Desde allí, le gustaba observar los tejados rojos, el humo suave de las chimeneas y la gente caminando por la plaza. Siempre había sentido curiosidad por los humanos, pero nunca se había acercado mucho a ellos.</p>
+            
+            <img src="imagenes/imagen1.png" alt="Flam en su cueva" class="story-image">
+            <p class="image-caption">Flam observando el valle desde su cueva</p>
+
+            <p>Flam tenía un secreto que le hacía sentir diferente de los otros dragones de las historias antiguas. Le daba miedo su propio fuego. Sabía que dentro de él había una llama poderosa, pero no confiaba en ella. Un día, solo en la cueva, decidió intentarlo. Respiró hondo, notó el calor subiendo por la garganta… y una chispa pequeña escapó de su boca. Espantado, saltó hacia atrás y corrió a apagarla con las patas, convencido de que podía provocar un incendio.</p>
+            
+            <p class="dialogue">—No puedo… —se repetía—. Mi fuego es peligroso.</p>
+            
+            <p>A partir de ese momento, cada vez que notaba aquel calor dentro de él, se escondía. Prefería sentirse cobarde antes que arriesgarse a hacer daño a alguien.</p>
+
+            <img src="imagenes/Imagen2.png" alt="Lina y Flam" class="story-image">
+            <p class="image-caption">Lina descubre a Flam cerca de la cueva</p>
+
+            <p>Una mañana de primavera, mientras el sol teñía la montaña de luz dorada, una niña apareció cerca de la cueva. Era Lina. Llevaba una cesta llena de flores y caminaba sin prisa, observando mariposas y cantando suavemente. Cuando vio a Flam, se quedaron mirándose en silencio. Él tensó las alas, preparado para huir.</p>
+            
+            <p>Pero Lina no gritó.</p>
+            
+            <p class="dialogue">—Hola —dijo con naturalidad—. ¿Eres tú quien vive aquí?</p>
+            
+            <p>Flam asintió, sorprendido.</p>
+            
+            <p class="dialogue">—Sí… pero no me acerco al pueblo.</p>
+            
+            <p class="dialogue">—Pues yo sí me acercaré —respondió ella con una sonrisa—. Pareces simpático.</p>
+            
+            <p>Aquel día hablaron mucho rato. Lina le explicó cómo era la vida en el pueblo: el horno que olía a pan caliente, la plaza donde jugaban los niños, las historias que le gustaba leer junto al fuego. Flam le enseñó un estanque escondido y una roca alta desde donde se veía todo el valle. Poco a poco, la amistad creció. Lina subía a menudo a visitarlo, y Flam ya no se sentía tan solo.</p>
+            
+            <p>Aun así, aún no le había confesado su miedo.</p>
+
+            <img src="imagenes/Imagen3.png" alt="La tormenta y el fuego" class="story-image">
+            <p class="image-caption">Flam ilumina el pueblo durante la tormenta</p>
+
+            <p>El invierno llegó con vientos fríos y días grises. Una noche, una tormenta feroz estalló sobre el pueblo. El viento soplaba con tanta fuerza que apagaba antorchas y hogueras. La lluvia caía sin parar, y las chimeneas se quedaron sin llama. El pueblo quedó a oscuras.</p>
+            
+            <p>Dentro de las casas, la gente temblaba. Un niño lloraba porque tenía frío. El panadero miraba su horno apagado sin saber cómo cocer el pan. Una abuela envolvía a sus nietos con mantas gruesas. Sin fuego, no había calor ni luz.</p>
+            
+            <p>Lina, mirando la plaza oscura desde la ventana, pensó inmediatamente en Flam. Se puso una capa gruesa y, a pesar de la lluvia, subió hacia la montaña.</p>
+            
+            <p>Cuando llegó a la cueva, Flam estaba encogido, asustado por los truenos.</p>
+            
+            <p class="dialogue">—Flam —dijo ella, con la voz temblorosa pero decidida—, el pueblo necesita ayuda. Los fuegos se han apagado.</p>
+            
+            <p>El pequeño dragón sintió de inmediato el calor dentro de él, como si la llama quisiera salir. Pero también sintió el miedo de siempre.</p>
+            
+            <p class="dialogue">—¿Y si hago daño a alguien? —preguntó con los ojos bajos.</p>
+            
+            <p>Desde un árbol antiguo cerca de la cueva, el Búho Sabio desplegó las alas y bajó planeando suavemente. Era viejo y sereno, con una mirada profunda que parecía haber visto muchas cosas.</p>
+            
+            <p class="dialogue">—Flam —dijo con voz pausada—, el fuego no es enemigo. El fuego es luz, es cocina, es protección. Depende de quién lo use. Tú tienes miedo porque tienes buen corazón. Y precisamente por eso tu fuego puede ser seguro.</p>
+            
+            <p>Flam se quedó en silencio. Miró a Lina, empapada por la lluvia pero con los ojos llenos de confianza. Recordó al niño que lloraba, al horno apagado, a la abuela con las mantas. Cerró los ojos un momento, respirando profundamente. Esta vez no quería huir.</p>
+            
+            <p class="dialogue">—Lo intentaré —dijo finalmente.</p>
+            
+            <p>Abrió la boca con cuidado. Una llama pequeña y dorada salió suavemente, como la luz de una vela. No quemaba con furia; calentaba con dulzura. Al ver que la cueva no se encendía ni había peligro, Flam sintió una fuerza nueva en el pecho.</p>
+            
+            <p>Voló hacia el pueblo con Lina corriendo a su lado. En la plaza, inclinó la cabeza y encendió la hoguera central. Después, con mucho cuidado, fue encendiendo otros fuegos. El panadero pudo volver a calentar el horno. La abuela extendió las manos ante la llama con un suspiro de alivio. El niño dejó de llorar y sonrió al ver la luz volver.</p>
+            
+            <p>La gente miraba al pequeño dragón con sorpresa… y luego con gratitud.</p>
+            
+            <p class="dialogue">—¡Gracias! —gritó alguien.</p>
+            
+            <p class="dialogue">—¡Es nuestro dragón! —dijo el niño.</p>
+            
+            <p>Flam sentía el corazón latiendo fuerte, pero ya no era miedo lo que lo llenaba. Era alegría. Comprendió que su fuego era especial porque nacía del deseo de ayudar. No destruía: protegía.</p>
+            
+            <p>Cuando la tormenta se disipó y las nubes dejaron paso a un cielo claro, el pueblo volvía a estar lleno de luz y vida. Lina se acercó y lo abrazó tan fuerte como pudo.</p>
+            
+            <p class="dialogue">—¿Lo ves? —le dijo—. Tu fuego sale de tu buen corazón.</p>
+            
+            <p>Desde aquel día, Flam ya no se escondió nunca más. Seguía siendo prudente, pero no dejaba que el miedo decidiera por él. Ayudaba a encender las hogueras en invierno, iluminaba la plaza durante las fiestas y calentaba el horno cuando hacía falta. El Búho Sabio lo observaba desde su árbol con satisfacción, sabiendo que el pequeño dragón había aprendido una gran lección.</p>
+            
+            <p>Y así, entre la montaña y el valle, Flam se convirtió en el dragón amigo del pueblo. Todos sabían que, cuando la oscuridad llegaba, siempre habría una llama cálida nacida de un corazón valiente.</p>
+        </div>
+    </div>
+
+    <!-- English Content -->
+    <div id="english" class="content-section">
+        <div class="story-text">
+            <p>At the foot of a tall mountain covered in pine trees lived Flam, a small green dragon with shiny scales and big, curious eyes. His cave was warm and safe, with views of the village that spread across the valley. From there, he liked to observe the red rooftops, the gentle smoke from the chimneys, and the people walking through the square. He had always been curious about humans, but he had never approached them much.</p>
+            
+            <img src="imagenes/imagen1.png" alt="Flam in his cave" class="story-image">
+            <p class="image-caption">Flam watching the valley from his cave</p>
+
+            <p>Flam had a secret that made him feel different from the other dragons in the old stories. He was afraid of his own fire. He knew there was a powerful flame inside him, but he didn't trust it. One day, alone in his cave, he decided to try. He took a deep breath, felt the heat rising up his throat… and a tiny spark escaped from his mouth. Terrified, he jumped back and ran to put it out with his paws, convinced he could start a fire.</p>
+            
+            <p class="dialogue">"I can't…" he kept repeating to himself. "My fire is dangerous."</p>
+            
+            <p>From that moment on, whenever he felt that warmth inside him, he would hide. He preferred to feel like a coward rather than risk hurting someone.</p>
+
+            <img src="imagenes/Imagen2.png" alt="Lina and Flam" class="story-image">
+            <p class="image-caption">Lina discovers Flam near the cave</p>
+
+            <p>One spring morning, while the sun painted the mountain in golden light, a girl appeared near the cave. It was Lina. She carried a basket full of flowers and walked unhurriedly, watching butterflies and singing softly. When she saw Flam, they stood looking at each other in silence. He tensed his wings, ready to flee.</p>
+            
+            <p>But Lina didn't scream.</p>
+            
+            <p class="dialogue">"Hello," she said naturally. "Are you the one who lives here?"</p>
+            
+            <p>Flam nodded, surprised.</p>
+            
+            <p class="dialogue">"Yes… but I don't go near the village."</p>
+            
+            <p class="dialogue">"Well, I will come near," she replied with a smile. "You seem nice."</p>
+            
+            <p>That day they talked for a long time. Lina explained what life was like in the village: the bakery that smelled of warm bread, the square where the children played, the stories she liked to read by the fire. Flam showed her a hidden pond and a high rock from where the whole valley could be seen. Little by little, their friendship grew. Lina often came up to visit him, and Flam no longer felt so alone.</p>
+            
+            <p>Still, he hadn't confessed his fear to her yet.</p>
+
+            <img src="imagenes/imagen3.png" alt="The storm and the fire" class="story-image">
+            <p class="image-caption">Flam lights up the village during the storm</p>
+
+            <p>Winter arrived with cold winds and gray days. One night, a fierce storm burst over the village. The wind blew so hard that it extinguished torches and bonfires. The rain fell endlessly, and the chimneys lost their flames. The village was left in darkness.</p>
+            
+            <p>Inside the houses, people trembled. A child cried because he was cold. The baker looked at his extinguished oven, not knowing how to bake the bread. A grandmother wrapped her grandchildren in thick blankets. Without fire, there was no warmth or light.</p>
+            
+            <p>Lina, looking at the dark square from her window, immediately thought of Flam. She put on a thick cloak and, despite the rain, climbed up the mountain.</p>
+            
+            <p>When she arrived at the cave, Flam was curled up, frightened by the thunder.</p>
+            
+            <p class="dialogue">"Flam," she said, her voice trembling but determined, "the village needs help. The fires have gone out."</p>
+            
+            <p>The little dragon immediately felt the heat inside him, as if the flame wanted to come out. But he also felt his usual fear.</p>
+            
+            <p class="dialogue">"What if I hurt someone?" he asked, looking down.</p>
+            
+            <p>From an ancient tree near the cave, the Wise Owl spread his wings and glided down gently. He was old and serene, with a deep gaze that seemed to have seen many things.</p>
+            
+            <p class="dialogue">"Flam," he said in a calm voice, "fire is not the enemy. Fire is light, it is cooking, it is protection. It depends on who uses it. You are afraid because you have a good heart. And precisely because of that, your fire can be safe."</p>
+            
+            <p>Flam remained silent. He looked at Lina, soaked by the rain but with eyes full of confidence. He remembered the crying child, the extinguished oven, the grandmother with her blankets. He closed his eyes for a moment, breathing deeply. This time he didn't want to run away.</p>
+            
+            <p class="dialogue">"I'll try," he finally said.</p>
+            
+            <p>He opened his mouth carefully. A small, golden flame came out gently, like the light of a candle. It didn't burn with fury; it warmed with sweetness. Seeing that the cave didn't catch fire and there was no danger, Flam felt a new strength in his chest.</p>
+            
+            <p>He flew to the village with Lina running by his side. In the square, he bowed his head and lit the central bonfire. Then, very carefully, he went about lighting other fires. The baker was able to heat his oven again. The grandmother extended her hands toward the flame with a sigh of relief. The child stopped crying and smiled when he saw the light return.</p>
+            
+            <p>The people looked at the little dragon with surprise… and then with gratitude.</p>
+            
+            <p class="dialogue">"Thank you!" someone shouted.</p>
+            
+            <p class="dialogue">"He's our dragon!" said the child.</p>
+            
+            <p>Flam felt his heart beating strongly, but it was no longer fear that filled him. It was joy. He understood that his fire was special because it was born from the desire to help. It didn't destroy: it protected.</p>
+            
+            <p>When the storm cleared and the clouds gave way to a clear sky, the village was once again full of light and life. Lina approached and hugged him as tightly as she could.</p>
+            
+            <p class="dialogue">"You see?" she told him. "Your fire comes from your good heart."</p>
+            
+            <p>From that day on, Flam never hid again. He remained cautious, but he didn't let fear decide for him. He helped light the winter bonfires, illuminated the square during festivals, and warmed the oven when needed. The Wise Owl watched him from his tree with satisfaction, knowing that the little dragon had learned a great lesson.</p>
+            
+            <p>And so, between the mountain and the valley, Flam became the friend of the village. Everyone knew that when darkness arrived, there would always be a warm flame born from a brave heart.</p>
+        </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div id="summary" class="content-section">
+        <h2 style="text-align: center; color: #ffd700; margin-bottom: 2rem; font-size: 2rem;">Resum / Resumen / Summary</h2>
+        
+        <div class="summary-grid">
+            <div class="summary-card">
+                <span class="lang-tag">CATALÀ</span>
+                <h3>En Flam</h3>
+                <p>En Flam és un petit drac verd que viu a la falda d'una muntanya i té por del seu propi foc per por de fer mal. Gràcies a l'amistat amb la Lina, una nena del poble, i la saviesa del Mussol Saví, aprèn que el foc pot ser segur quan ve del cor. Durant una tempesta d'hivern que apaga tots els focs del poble, Flam supera la seva por i utilitza la seva flama per ajudar els vilatans, descobrint que el seu foc és especial perquè neix del desig de protegir, no de destruir. Des d'aleshores, es converteix en el drac amic del poble.</p>
+            </div>
+
+            <div class="summary-card">
+                <span class="lang-tag">ESPAÑOL</span>
+                <h3>Flam</h3>
+                <p>Flam es un pequeño dragón verde que vive al pie de una montaña y tiene miedo de su propio fuego por temor a hacer daño. Gracias a la amistad con Lina, una niña del pueblo, y la sabiduría del Búho Sabio, aprende que el fuego puede ser seguro cuando viene del corazón. Durante una tormenta de invierno que apaga todos los fuegos del pueblo, Flam supera su miedo y utiliza su llama para ayudar a los aldeanos, descubriendo que su fuego es especial porque nace del deseo de proteger, no de destruir. Desde entonces, se convierte en el dragón amigo del pueblo.</p>
+            </div>
+
+            <div class="summary-card">
+                <span class="lang-tag">ENGLISH</span>
+                <h3>Flam</h3>
+                <p>Flam is a small green dragon living at the foot of a mountain who fears his own fire, afraid of hurting others. Through friendship with Lina, a village girl, and the wisdom of the Wise Owl, he learns that fire can be safe when it comes from the heart. During a winter storm that extinguishes all fires in the village, Flam overcomes his fear and uses his flame to help the villagers, discovering that his fire is special because it is born from the desire to protect, not destroy. From then on, he becomes the village's friend.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Scroll to content
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Audio functionality
+        const audio = document.getElementById('bgAudio');
+        const audioBtn = document.getElementById('audioBtn');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                audioBtn.innerHTML = '🔇';
+                audioBtn.classList.add('muted');
+                isPlaying = false;
+            } else {
+                audio.play().catch(e => console.log('Audio play failed:', e));
+                audioBtn.innerHTML = '🔊';
+                audioBtn.classList.remove('muted');
+                isPlaying = true;
+            }
+        }
+
+        // Try to autoplay (browsers may block this)
+        window.addEventListener('load', () => {
+            audio.volume = 0.3; // Set volume to 30%
+        });
+    </script>
+
+</body>
+</html>
